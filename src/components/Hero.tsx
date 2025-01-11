@@ -8,10 +8,7 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+        <div 
           className="text-center"
         >
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
@@ -39,14 +36,14 @@ export default function Hero() {
               Watch Demo
             </Button>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Demo Preview */}
-      <motion.div 
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
+      <div 
+        // initial={{ opacity: 0, y: 50 }}
+        // animate={{ opacity: 1, y: 0 }}
+        // transition={{ duration: 0.8, delay: 0.2 }}
         className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24"
       >
         <div className="relative rounded-xl overflow-hidden shadow-2xl">
@@ -57,7 +54,7 @@ export default function Hero() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
-      </motion.div>
+      </div>
     </section>
   )
 }

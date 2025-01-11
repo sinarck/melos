@@ -7,14 +7,10 @@ export default function Showcase() {
   return (
     <section id="showcase" className="bg-black/20 backdrop-blur-xl py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ScrollAnimation>
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-16">
             See Melos AI in Action
           </h2>
-        </ScrollAnimation>
-        <ScrollAnimation>
           <ImageUpload />
-        </ScrollAnimation>
       </div>
     </section>
   )
