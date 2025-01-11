@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function CTA() {
   return (
@@ -10,6 +11,8 @@ export default function CTA() {
         <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors">
           Get Started Now
         </button>
+
+    
       </div>
     </section>
   );

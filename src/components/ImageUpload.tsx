@@ -5,6 +5,8 @@ import { Upload, Play, Pause } from 'lucide-react'
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { motion, useScroll, useTransform } from "framer-motion"
+
 
 interface Song {
   id: string
@@ -174,6 +176,8 @@ export default function ImageUpload() {
         <div className="mt-8 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto"></div>
           <p className="text-white/60 mt-4">Analyzing your image...</p>
+          <p className="text-white/60 mt-4">Finding ...</p>
+          
         </div>
       )}
     </div>
