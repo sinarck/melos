@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Upload, Play, Pause, Share2, PlusCircle } from 'lucide-react';
+import { Upload, Play, Pause, Share2, PlusCircle, Sparkles } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -23,7 +23,7 @@ interface Song {
 }
 
 const loadingMessages = [
-  "Retrieving your image—just a moment!",
+  "Retrieving your image — just a moment!",
   "A cozy house with a bonfire outside",
   "Finding songs matching image vibe description",
   "Displaying your songs",
@@ -38,6 +38,15 @@ export default function ImagePlayground() {
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const router = useRouter();
+  
+  <div className="flex items-center justify-center mb-8">
+          <div className="bg-white p-4 rounded-2xl shadow-lg flex items-center space-x-3">
+            <Sparkles className="w-8 h-8 text-indigo-600" />
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-transparent bg-clip-text">
+              MelosAI Playground
+            </h1>
+          </div>
+        </div>
 
   useEffect(() => {
     if (isUploading) {
@@ -133,7 +142,20 @@ export default function ImagePlayground() {
   };
 
   const handleTryAnother = () => {
-    router.push("/login");
+     // Stop any playing audio
+     if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    
+    // Reset all states to initial values
+    setUploadedImage(null);
+    setSongs([]);
+    setIsUploading(false);
+    setCurrentlyPlaying(null);
+    setLoadingMessageIndex(0);
+    setIsDragging(false);
+    // router.push('/login'); if you want to go directly to login page to promote creation of accounts
   };
 
   return (
