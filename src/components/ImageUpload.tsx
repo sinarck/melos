@@ -289,13 +289,7 @@ function SongCard({ song, isPlaying, onPlayPause }: {
                 className="w-5 h-5"
               />
             </Button>
-            <Button variant="outline" size="icon" className="rounded-full">
-              <img
-                src="/copy.svg"
-                alt="Copy Link"
-                className="w-5 h-5"
-              />
-            </Button>
+            
           </div>
           <div className="border-t border-gray-100 dark:border-gray-800 mt-4 pt-4">
             <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-4">
