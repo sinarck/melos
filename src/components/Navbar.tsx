@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Music2, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import Link from 'next/link'
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -42,10 +43,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Music2 className="w-8 h-8 text-pink-500" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-violet-500 text-transparent bg-clip-text">
+            <Link href="/">
+              <Music2 className="w-8 h-8 text-pink-500" />
+            </Link>
+            <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-violet-500 text-transparent bg-clip-text">
               Melos AI
-            </span>
+            </Link>
           </div>
           <div className="hidden md:flex items-center space-x-8">
             {["features", "how-it-works", "showcase"].map((section) => (
