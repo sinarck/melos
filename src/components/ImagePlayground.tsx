@@ -23,7 +23,7 @@ interface Song {
 }
 
 const loadingMessages = [
-  "Grabbing your image",
+  "Retrieving your image—just a moment!",
   "A cozy house with a bonfire outside",
   "Finding songs matching image vibe description",
   "Displaying your songs",
@@ -350,7 +350,7 @@ function SongCard({
         </Card>
       </motion.div>
 
-      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
+      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog} >
         <DialogContent className="sm:max-w-md bg-gray-900 text-white border-transparent drop-shadow-lg">
           <DialogHeader>
             <DialogTitle>Share this song</DialogTitle>
