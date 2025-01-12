@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Upload, Play, Pause, Share2, PlusCircle } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Upload, Play, Pause, Share2, PlusCircle } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 interface Song {
   id: string;
@@ -21,13 +22,36 @@ interface Song {
   audioUrl: string;
 }
 
+const loadingMessages = [
+  "Grabbing your image",
+  "A cozy house with a bonfire outside",
+  "Finding songs matching image vibe description",
+  "Displaying your songs",
+];
+
 export default function ImagePlayground() {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [songs, setSongs] = useState<Song[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isUploading) {
+      const interval = setInterval(() => {
+        setLoadingMessageIndex((prevIndex) =>
+          prevIndex < loadingMessages.length - 1 ? prevIndex + 1 : prevIndex
+        );
+      }, 2000);
+
+      return () => clearInterval(interval);
+    } else {
+      setLoadingMessageIndex(0);
+    }
+  }, [isUploading]);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -60,7 +84,7 @@ export default function ImagePlayground() {
       setUploadedImage(imageUrl);
 
       // Simulate API call for song recommendations
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 8000));
       setSongs([
         {
           id: "1",
@@ -109,8 +133,7 @@ export default function ImagePlayground() {
   };
 
   const handleTryAnother = () => {
-    setUploadedImage(null);
-    setSongs([]);
+    router.push("/login");
   };
 
   return (
@@ -187,8 +210,56 @@ export default function ImagePlayground() {
 
       {isUploading && (
         <div className="mt-8 text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto"></div>
-          <p className="text-gray-400 mt-4">Analyzing your image...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto mb-4"></div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={loadingMessageIndex}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.2 }}
+              transition={{
+                duration: 0.5,
+                ease: [0.4, 0, 0.2, 1],
+              }}
+            >
+              <motion.p
+                className="text-white text-lg font-semibold"
+                animate={{
+                  y: [0, -10, 0],
+                  transition: {
+                    duration: 1.5,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                  },
+                }}
+              >
+                {loadingMessages[loadingMessageIndex]}
+              </motion.p>
+            </motion.div>
+          </AnimatePresence>
+          <motion.div
+            className="mt-4 flex justify-center space-x-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            {loadingMessages.map((_, index) => (
+              <motion.div
+                key={index}
+                className={`h-2 w-2 rounded-full ${
+                  index === loadingMessageIndex ? "bg-pink-500" : "bg-gray-500"
+                }`}
+                animate={{
+                  scale: index === loadingMessageIndex ? [1, 1.5, 1] : 1,
+                }}
+                transition={{
+                  duration: 0.5,
+                  repeat: index === loadingMessageIndex ? Infinity : 0,
+                  repeatType: "reverse",
+                }}
+              />
+            ))}
+          </motion.div>
         </div>
       )}
     </div>
@@ -207,12 +278,19 @@ function SongCard({
   const [showShareDialog, setShowShareDialog] = useState(false);
 
   const handleTwitterShare = () => {
-    const url = "http://google.com";  // Replace with your actual URL
-    const text = "Check out this song: " + song.title + " by " + song.artist + "that MelosAI recommended from this picture!";  // Customize the share text
+    const url = "http://google.com"; // Replace with your actual URL
+    const text =
+      "Check out this song " +
+      song.title +
+      " by " +
+      song.artist +
+      "that MelosAI recommended from this picture!"; // Customize the share text
     window.open(
-      `http://twitter.com/share?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
-      '',
-      'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0'
+      `http://twitter.com/share?url=${encodeURIComponent(
+        url
+      )}&text=${encodeURIComponent(text)}`,
+      "",
+      "left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0"
     );
     setShowShareDialog(false);
   };
@@ -273,7 +351,7 @@ function SongCard({
       </motion.div>
 
       <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
-        <DialogContent className="sm:max-w-md bg-gray-900 text-white">
+        <DialogContent className="sm:max-w-md bg-gray-900 text-white border-transparent drop-shadow-lg">
           <DialogHeader>
             <DialogTitle>Share this song</DialogTitle>
           </DialogHeader>
@@ -306,21 +384,39 @@ function SongCard({
               Add to your library
             </p>
             <div className="flex justify-center gap-4">
-              <a href="https://spotify.com" target="_blank" rel="noopener noreferrer" className="w-full">
+              <a
+                href="https://spotify.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full"
+              >
                 <Button
                   className="w-full bg-gray-800 text-white hover:bg-gray-700"
                   variant="secondary"
                 >
-                  <img src="/spotify.svg" alt="Spotify" className="w-5 h-5 mr-2" />
+                  <img
+                    src="/spotify.svg"
+                    alt="Spotify"
+                    className="w-5 h-5 mr-2"
+                  />
                   Spotify
                 </Button>
               </a>
-              <a href="https://music.apple.com" target="_blank" rel="noopener noreferrer" className="w-full">
+              <a
+                href="https://music.apple.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full"
+              >
                 <Button
                   className="w-full bg-gray-800 text-white hover:bg-gray-700"
                   variant="secondary"
                 >
-                  <img src="/apple-music.svg" alt="Apple Music" className="w-5 h-5 mr-2" />
+                  <img
+                    src="/apple-music.svg"
+                    alt="Apple Music"
+                    className="w-5 h-5 mr-2"
+                  />
                   Apple Music
                 </Button>
               </a>
@@ -331,3 +427,4 @@ function SongCard({
     </>
   );
 }
+
