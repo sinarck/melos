@@ -2,51 +2,93 @@
 
 import { ArrowRight } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { motion, useInView } from "framer-motion"
+import { motion, useScroll, useTransform, useInView } from "framer-motion"
 import { useRouter } from 'next/navigation'
-import { useRef } from 'react'
+import { useRef, useEffect, useState } from 'react'
+
+const revealVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0 }
+}
 
 export default function Hero() {
   const router = useRouter()
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
+  const [hasBeenInView, setHasBeenInView] = useState(false)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["end end", "end start"]
+  })
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2
-      }
+  // Scroll to top on page refresh
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  useEffect(() => {
+    if (isInView) {
+      setHasBeenInView(true)
     }
-  }
+  }, [isInView])
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  }
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8])
+  const y = useTransform(scrollYProgress, [0, 0.5], [0, -50])
 
   return (
-    <section ref={ref} className="relative overflow-hidden">
+    <motion.section 
+      ref={ref} 
+      className="relative overflow-hidden min-h-screen flex items-center"
+      style={hasBeenInView ? { opacity, scale } : {}}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
         <motion.div 
           className="text-center relative z-10"
-          variants={containerVariants}
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          animate="visible"
+          variants={revealVariants}
+          transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-bold text-white mb-6">
+          <motion.h1 
+            className="text-5xl md:text-7xl font-bold text-white mb-6"
+            initial="hidden"
+            animate="visible"
+            variants={revealVariants}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            style={hasBeenInView ? { y } : {}}
+          >
             Turn Images into
-            <span className="bg-gradient-to-r from-pink-500 to-violet-500 text-transparent bg-clip-text">
+            <motion.span 
+              className="bg-gradient-to-r from-pink-500 to-violet-500 text-transparent bg-clip-text"
+              initial="hidden"
+              animate="visible"
+              variants={revealVariants}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
               {" "}
               Musical Magic
-            </span>
+            </motion.span>
           </motion.h1>
-          <motion.p variants={itemVariants} className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+          <motion.p 
+            className="text-xl text-white/80 mb-8 max-w-2xl mx-auto"
+            initial="hidden"
+            animate="visible"
+            variants={revealVariants}
+            transition={{ duration: 0.5, delay: 0.8 }}
+            style={hasBeenInView ? { y } : {}}
+          >
             Experience the future of music discovery. Upload any image and let
             AI find the perfect songs that match its mood and atmosphere.
           </motion.p>
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <motion.div 
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            initial="hidden"
+            animate="visible"
+            variants={revealVariants}
+            transition={{ duration: 0.5, delay: 1 }}
+            style={hasBeenInView ? { y } : {}}
+          >
             <Button
               className="px-8 py-6 bg-gradient-to-r from-pink-500 to-violet-500 text-white rounded-lg font-semibold hover:opacity-90 transition-all duration-300 hover:scale-105"
               onClick={() => router.push('/playground')}
@@ -64,12 +106,11 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Demo Preview */}
+      {/* Demo Preview with Fade-in Effect */}
       <motion.div 
-        variants={itemVariants}
-        initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
-        transition={{ delay: 0.6 }}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 1 }}
         className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 relative z-10"
       >
         <div className="relative rounded-xl overflow-hidden shadow-2xl">
@@ -81,7 +122,19 @@ export default function Hero() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
       </motion.div>
-    </section>
+      
+      {/* Next Component */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 2 }} // Adjust delay for when the next component appears
+        className="next-component relative z-10"
+      >
+        {/* This is the next component that will appear after a slight delay */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+          {/* Insert your next component content here */}
+        </div>
+      </motion.div>
+    </motion.section>
   )
 }
-
