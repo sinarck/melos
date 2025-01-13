@@ -322,6 +322,46 @@ function SongCard({
     setShowShareDialog(false);
   };
 
+
+  const handleFacebookShare = () => {
+    const url = "http://google.com"; // Replace with your actual URL
+    const text =
+      "Check out this song " +
+      song.title +
+      " by " +
+      song.artist +
+      " that MelosAI recommended from this picture!"; // Customize the share text
+    
+    // Facebook sharing doesn't support custom text directly.
+    // Text is typically derived from the shared URL's meta tags (title, description, etc.).
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+      "",
+      "left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0"
+    );
+    
+    setShowShareDialog(false);
+  };
+
+const handleLinkedinShare = () => {
+    const url = "http://google.com"; // Replace with your actual URL
+    const text =
+      "Check out this song " +
+      song.title +
+      " by " +
+      song.artist +
+      " that MelosAI recommended from this picture!"; // Customize the share text
+  
+    // LinkedIn sharing primarily shares the URL and uses metadata from the webpage.
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      "",
+      "left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0"
+    );
+  
+    setShowShareDialog(false);
+  };
+
   return (
     <>
       <motion.div
@@ -387,13 +427,15 @@ function SongCard({
               variant="secondary"
               size="icon"
               className="rounded-full bg-gray-800 border-gray-700 hover:bg-gray-700"
+              onClick ={handleLinkedinShare}
             >
-              <img src="/instagram.svg" alt="Instagram" className="w-5 h-5" />
+              <img src="/linkedin.svg" alt="Linkedin" className="w-5 h-5" />
             </Button>
             <Button
               variant="secondary"
               size="icon"
               className="rounded-full bg-gray-800 border-gray-700 hover:bg-gray-700"
+              onClick={handleFacebookShare}
             >
               <img src="/facebook.svg" alt="Facebook" className="w-4 h-4" />
             </Button>

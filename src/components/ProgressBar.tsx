@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 
@@ -23,8 +23,8 @@ export default function ProgressBar() {
   return (
     <div className="h-2 fixed top-0 left-0 w-full bg-gray-800 z-50">
       <div
-        className="h-full bg-pink-500 transition-all duration-300 ease-out"
-        style={{ width: `${scrollProgress}%` }}
+        className="h-full bg-pink-500"
+        style={{ width: `${scrollProgress}%`, transition: "width 0ms linear" }} // No delay
       ></div>
     </div>
   );
