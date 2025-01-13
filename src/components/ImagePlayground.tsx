@@ -1,4 +1,5 @@
 "use client";
+"use client";
 
 import { useState, useRef, useEffect } from "react";
 import { Upload, Play, Pause, Share2, PlusCircle, Sparkles } from 'lucide-react';
@@ -14,6 +15,8 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 
+
+
 interface Song {
   id: string;
   title: string;
@@ -22,9 +25,10 @@ interface Song {
   audioUrl: string;
 }
 
+
 const loadingMessages = [
   "Retrieving your image — just a moment!",
-  "A cozy house with a bonfire outside",
+  "\"A cozy house with a bonfire and s'mores\"",
   "Finding songs matching image vibe description",
   "Displaying your songs",
 ];
@@ -48,6 +52,7 @@ export default function ImagePlayground() {
           </div>
         </div>
 
+  
   useEffect(() => {
     if (isUploading) {
       const interval = setInterval(() => {

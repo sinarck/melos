@@ -1,6 +1,7 @@
 "use client"
 
-import { ScrollAnimation } from './ScrollAnimation'
+import { motion, useInView } from "framer-motion"
+import { useRef } from 'react'
 
 const steps = [
   {
@@ -21,17 +22,43 @@ const steps = [
 ]
 
 export default function HowItWorks() {
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, amount: 0.3 })
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  }
+
   return (
-    <section id="how-it-works" className="py-24">
+    <section ref={ref} id="how-it-works" className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ScrollAnimation>
-          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-16">
-            How Melos AI Works
-          </h2>
-        </ScrollAnimation>
-        <div className="grid md:grid-cols-3 gap-8">
+        <motion.h2 
+          variants={itemVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="text-3xl md:text-4xl font-bold text-white text-center mb-16"
+        >
+          How Melos AI Works
+        </motion.h2>
+        <motion.div 
+          className="grid md:grid-cols-3 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+        >
           {steps.map((step, index) => (
-            <ScrollAnimation key={index}>
+            <motion.div key={index} variants={itemVariants}>
               <div className="relative">
                 <div className={`absolute -left-4 -top-4 w-12 h-12 rounded-full bg-${['pink', 'violet', 'indigo'][index]}-500 text-white flex items-center justify-center font-bold text-xl`}>
                   {index + 1}
@@ -44,9 +71,9 @@ export default function HowItWorks() {
                 <h3 className="text-xl font-semibold text-white mb-2">{step.title}</h3>
                 <p className="text-white/70">{step.description}</p>
               </div>
-            </ScrollAnimation>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   )
