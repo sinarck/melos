@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { motion, useScroll, useTransform, useInView } from "framer-motion"
 import { useRouter } from 'next/navigation'
 import { useRef, useEffect, useState } from 'react'
+import Lenis from 'lenis'
 
 const revealVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -20,6 +21,25 @@ export default function Hero() {
     target: ref,
     offset: ["end end", "end start"]
   })
+
+  // Initialize Lenis for smooth scrolling
+  useEffect(() => {
+    const lenis = new Lenis({
+      lerp: 0.1,  // Smoothness of the scrolling
+      // smooth: true,
+    })
+
+    function raf(time: number) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+
+    return () => {
+      lenis.destroy()
+    }
+  }, [])
 
   // Scroll to top on page refresh
   useEffect(() => {
@@ -106,7 +126,7 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Demo Preview with Fade-in Effect */}
+      {/* Demo Preview with Parallax Effect */}
       <motion.div 
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -114,15 +134,18 @@ export default function Hero() {
         className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 relative z-10"
       >
         <div className="relative rounded-xl overflow-hidden shadow-2xl">
-          <img
+          <motion.img
             src="https://images.unsplash.com/photo-1707343843437-caacff5cfa74?w=2400"
             alt="Melos AI Demo"
             className="w-full"
+            style={{
+              transform: `translateY(${y.get() * 0.5}px)`,  // Apply parallax effect
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
       </motion.div>
-      
+
       {/* Next Component */}
       <motion.div
         initial={{ opacity: 0 }}
