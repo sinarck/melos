@@ -18,7 +18,7 @@ export default function Home() {
         <Navbar />
         <ProgressBar />
       </div>
-
+    {/* Progress bar */}
       {/* Page Content */}
       <Hero />
       <Features />
