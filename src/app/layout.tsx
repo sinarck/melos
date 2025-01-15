@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { useRouter } from "next/navigation"; // Correct import for client-side routing
 import { useEffect } from "react";
 
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -38,6 +39,7 @@ export default function RootLayout({
             <SignIn routing="hash" />
           </SignedOut>
           <SignedIn>{children}</SignedIn>
+          <Toaster richColors />
         </body>
       </html>
     </ClerkProvider>
