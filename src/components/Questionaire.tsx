@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import LoadingAnimation from "@/components/LoadingAnimation";
+import useAnswerStore from "@/store"; // Import the Zustand store
 
 const questions = [
   {

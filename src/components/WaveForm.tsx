@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import WaveSurfer from 'wavesurfer.js';
+import { useEffect, useRef } from "react";
+import WaveSurfer from "wavesurfer.js";
 
 interface WaveFormProps {
   audioUrl: string;
@@ -13,29 +13,36 @@ const WaveForm = ({ audioUrl, isPlaying, currentTime }: WaveFormProps) => {
   const wavesurferRef = useRef<WaveSurfer | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !audioUrl) return;
 
+    // Initialize WaveSurfer instance
     wavesurferRef.current = WaveSurfer.create({
       container: containerRef.current,
-      waveColor: '#F1F0FB',
-      progressColor: '#9b87f5',
-      cursorColor: 'transparent',
+      waveColor: "#F1F0FB",
+      progressColor: "#9b87f5",
+      cursorColor: "transparent",
       barWidth: 3,
       barGap: 2,
       barRadius: 2,
       height: 96,
       normalize: false,
-      backend: 'WebAudio',
+      backend: "WebAudio",
       minPxPerSec: 50,
       interact: false,
       fillParent: true,
     });
 
-    wavesurferRef.current.load(audioUrl);
+    // Load the audio file
+    try {
+      wavesurferRef.current.load(audioUrl);
+    } catch (error) {
+      console.error("Failed to load audio in WaveSurfer:", error);
+    }
 
     return () => {
       if (wavesurferRef.current) {
         wavesurferRef.current.destroy();
+        wavesurferRef.current = null;
       }
     };
   }, [audioUrl]);
@@ -52,16 +59,16 @@ const WaveForm = ({ audioUrl, isPlaying, currentTime }: WaveFormProps) => {
 
   useEffect(() => {
     if (!wavesurferRef.current) return;
-    
+
     const currentProgress = currentTime / (wavesurferRef.current.getDuration() || 1);
     wavesurferRef.current.seekTo(currentProgress);
   }, [currentTime]);
 
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       className="w-full overflow-hidden rounded-lg"
-      style={{ touchAction: 'none' }}
+      style={{ touchAction: "none" }}
     />
   );
 };
