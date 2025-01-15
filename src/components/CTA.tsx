@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Button } from "./ui/button";
 
 export default function CTA() {
   return (
@@ -8,12 +7,11 @@ export default function CTA() {
         <h2 className="text-4xl font-bold text-white mb-6">
           Ready to Get Started?
         </h2>
-        <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors">
+        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors">
           Get Started Now
-        </button>
-
-    
+        </Button>
       </div>
     </section>
   );
 }
+

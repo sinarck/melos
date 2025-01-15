@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 const steps = [
   {
@@ -66,7 +66,7 @@ export default function HowItWorks() {
               <div className="relative">
                 <div
                   className={`absolute -left-4 -top-4 w-12 h-12 rounded-full bg-${
-                    ["pink", "violet", "indigo"][index]
+                    ["pink", "violet", "indigo", "orange"][index]
                   }-500 text-white flex items-center justify-center font-bold text-xl`}
                 >
                   {index + 1}
@@ -88,3 +88,4 @@ export default function HowItWorks() {
     </motion.section>
   );
 }
+

@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function POST() {
   try {
     const response = await fetch(
       "https://song-name-gen-py-dsgfx.replit.app/generate-songs",
@@ -32,3 +32,4 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+

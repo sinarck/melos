@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
 export default function HeroPage() {
@@ -9,7 +10,8 @@ export default function HeroPage() {
 
   return (
     <div>
-      <button onClick={handleGetStarted}>Get Started Now</button>
+      <Button onClick={handleGetStarted}>Get Started Now</Button>
     </div>
   );
 }
+

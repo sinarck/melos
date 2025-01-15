@@ -1,15 +1,11 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import Navbar from "@/components/Navbar"
-import Hero from "@/components/Hero"
-import Features from "@/components/Features"
-import HowItWorks from "@/components/HowItWorks"
-import Showcase from "@/components/Showcase"
-import CTA from "@/components/CTA"
-import Footer from "@/components/Footer"
-import ProgressBar from "@/components/ProgressBar"
-
+import Features from "@/components/Features";
+import Footer from "@/components/Footer";
+import Hero from "@/components/Hero";
+import HowItWorks from "@/components/HowItWorks";
+import Navbar from "@/components/Navbar";
+import ProgressBar from "@/components/ProgressBar";
 
 export default function Home() {
   return (
@@ -19,12 +15,13 @@ export default function Home() {
         <Navbar />
         <ProgressBar />
       </div>
-    {/* Progress bar */}
+      {/* Progress bar */}
       {/* Page Content */}
       <Hero />
       <Features />
       <HowItWorks />
       <Footer />
     </main>
-  )
+  );
 }
+

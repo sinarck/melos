@@ -19,7 +19,6 @@ const loadingMessages = [
 export default function ImagePlayground() {
   const [uploaded, setUploaded] = useState(false);
   const [songs, setSongs] = useState<Song[]>([]);
-  const [aiGeneratedTrack, setAiGeneratedTrack] = useState<Song | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
@@ -47,7 +46,6 @@ export default function ImagePlayground() {
 
     setUploaded(false);
     setSongs([]);
-    setAiGeneratedTrack(null);
     setIsUploading(false);
     setCurrentlyPlaying(null);
     setLoadingMessageIndex(0);
@@ -71,12 +69,13 @@ export default function ImagePlayground() {
           },
         ],
       };
-    } catch (error) {
+    } catch (e) {
+      console.error(e);
       throw new Error("Failed to generate music");
     }
   };
 
-  const processImage = async (imageUrl: string) => {
+  const processImage = async () => {
     try {
       setIsUploading(true);
       setLoadingMessageIndex(0);
@@ -110,12 +109,14 @@ export default function ImagePlayground() {
           }}
           endpoint="imageUploader"
           onClientUploadComplete={(res) => {
+            console.log(res);
+
             toast.success("Image uploaded successfully", {
               description: "Now we'll generate some music for you.",
             });
             setUploaded(true);
             // Call processImage with the uploaded URL
-            processImage(res[0].url);
+            processImage();
           }}
           onUploadError={(error: Error) => {
             toast.error("Something went wrong", {

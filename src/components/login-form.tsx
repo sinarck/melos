@@ -1,26 +1,30 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardFooter,
-} from "@/components/ui/card"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { motion, AnimatePresence } from "framer-motion"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import * as React from "react";
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-function LoginCard({ onSubmit, isLoading }: { onSubmit: (e: React.SyntheticEvent) => void; isLoading: boolean }) {
+function LoginCard({
+  onSubmit,
+  isLoading,
+}: {
+  onSubmit: (e: React.SyntheticEvent) => void;
+  isLoading: boolean;
+}) {
   return (
     <Card className="bg-white/10 backdrop-blur-md border-white/20">
       <form onSubmit={onSubmit}>
@@ -32,7 +36,9 @@ function LoginCard({ onSubmit, isLoading }: { onSubmit: (e: React.SyntheticEvent
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-white">Email</Label>
+            <Label htmlFor="email" className="text-white">
+              Email
+            </Label>
             <Input
               id="email"
               type="email"
@@ -42,7 +48,9 @@ function LoginCard({ onSubmit, isLoading }: { onSubmit: (e: React.SyntheticEvent
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-white">Password</Label>
+            <Label htmlFor="password" className="text-white">
+              Password
+            </Label>
             <Input
               id="password"
               type="password"
@@ -65,10 +73,16 @@ function LoginCard({ onSubmit, isLoading }: { onSubmit: (e: React.SyntheticEvent
         </CardFooter>
       </form>
     </Card>
-  )
+  );
 }
 
-function RegisterCard({ onSubmit, isLoading }: { onSubmit: (e: React.SyntheticEvent) => void; isLoading: boolean }) {
+function RegisterCard({
+  onSubmit,
+  isLoading,
+}: {
+  onSubmit: (e: React.SyntheticEvent) => void;
+  isLoading: boolean;
+}) {
   return (
     <Card className="bg-white/10 backdrop-blur-md border-white/20">
       <form onSubmit={onSubmit}>
@@ -80,7 +94,9 @@ function RegisterCard({ onSubmit, isLoading }: { onSubmit: (e: React.SyntheticEv
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-white">Name</Label>
+            <Label htmlFor="name" className="text-white">
+              Name
+            </Label>
             <Input
               id="name"
               type="text"
@@ -89,7 +105,9 @@ function RegisterCard({ onSubmit, isLoading }: { onSubmit: (e: React.SyntheticEv
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-white">Email</Label>
+            <Label htmlFor="email" className="text-white">
+              Email
+            </Label>
             <Input
               id="email"
               type="email"
@@ -99,7 +117,9 @@ function RegisterCard({ onSubmit, isLoading }: { onSubmit: (e: React.SyntheticEv
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-white">Password</Label>
+            <Label htmlFor="password" className="text-white">
+              Password
+            </Label>
             <Input
               id="password"
               type="password"
@@ -122,40 +142,45 @@ function RegisterCard({ onSubmit, isLoading }: { onSubmit: (e: React.SyntheticEv
         </CardFooter>
       </form>
     </Card>
-  )
+  );
 }
 
-export function LoginForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
-  const [activeTab, setActiveTab] = React.useState<"login" | "register">("login")
-  const router = useRouter()
+export function LoginForm({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [activeTab, setActiveTab] = React.useState<"login" | "register">(
+    "login"
+  );
+  const router = useRouter();
 
   async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault()
-    setIsLoading(true)
+    event.preventDefault();
+    setIsLoading(true);
 
     setTimeout(() => {
-      setIsLoading(false)
-      router.push("/")
-    }, 3000)
+      setIsLoading(false);
+      router.push("/");
+    }, 3000);
   }
 
   async function handleGitHubLogin() {
-    setIsLoading(true)
+    setIsLoading(true);
     // Implement GitHub OAuth login here
     // For example:
     // window.location.href = '/api/auth/github'
-    console.log("GitHub login clicked")
-    setIsLoading(false)
+    console.log("GitHub login clicked");
+    setIsLoading(false);
   }
 
   async function handleGoogleLogin() {
-    setIsLoading(true)
+    setIsLoading(true);
     // Implement Google OAuth login here
     // For example:
     // window.location.href = '/api/auth/google'
-    console.log("Google login clicked")
-    setIsLoading(false)
+    console.log("Google login clicked");
+    setIsLoading(false);
   }
 
   return (
@@ -244,6 +269,6 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
