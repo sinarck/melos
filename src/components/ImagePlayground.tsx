@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useRef, useEffect } from "react";
 import {
   Upload,
@@ -20,8 +18,8 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-// import { AudioWaveform } from "@/components/ui/AudioWaveform";
 import AudioPlayer from "@/components/AudioPlayer";
+import WaveForm from "@/components/WaveForm";
 
 interface Song {
   id: string;
@@ -31,13 +29,12 @@ interface Song {
   audioUrl: string;
 }
 
-// Define the default song
 const defaultSong: Song = {
   id: "default",
   title: "Default Song Title",
   artist: "Default Artist",
-  image: "https://via.placeholder.com/150", // Placeholder image URL
-  audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Example audio URL
+  image: "https://via.placeholder.com/150",
+  audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
 };
 
 const loadingMessages = [
@@ -51,20 +48,12 @@ export default function ImagePlayground() {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [songs, setSongs] = useState<Song[]>([]);
+  const [aiGeneratedTrack, setAiGeneratedTrack] = useState<Song | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const router = useRouter();
-
-  <div className="flex items-center justify-center mb-8">
-    <div className="bg-white p-4 rounded-2xl shadow-lg flex items-center space-x-3">
-      <Sparkles className="w-8 h-8 text-indigo-600" />
-      <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-transparent bg-clip-text">
-        MelosAI Playground
-      </h1>
-    </div>
-  </div>;
 
   useEffect(() => {
     if (isUploading) {
@@ -112,6 +101,16 @@ export default function ImagePlayground() {
 
       // Simulate API call for song recommendations
       await new Promise((resolve) => setTimeout(resolve, 8000));
+
+      const generatedTrack: Song = {
+        id: "ai-track",
+        title: "AI-Generated Song",
+        artist: "MelosAI",
+        image: imageUrl,
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+      };
+      setAiGeneratedTrack(generatedTrack);
+
       setSongs([
         {
           id: "1",
@@ -141,6 +140,7 @@ export default function ImagePlayground() {
             "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
         },
       ]);
+
       setIsUploading(false);
     }
   };
@@ -160,20 +160,18 @@ export default function ImagePlayground() {
   };
 
   const handleTryAnother = () => {
-    // Stop any playing audio
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
     }
 
-    // Reset all states to initial values
     setUploadedImage(null);
     setSongs([]);
+    setAiGeneratedTrack(null);
     setIsUploading(false);
     setCurrentlyPlaying(null);
     setLoadingMessageIndex(0);
     setIsDragging(false);
-    // router.push('/login'); if you want to go directly to login page to promote creation of accounts
   };
 
   return (
@@ -243,27 +241,19 @@ export default function ImagePlayground() {
                   </h1>
                 </div>
               </div>
-
-              {/* {currentlyPlaying && (
-                <>
-                  <AudioWaveform
-                    audioUrl={
-                      songs.find((song) => song.id === currentlyPlaying)
-                        ?.audioUrl
-                    }
-                    isPlaying={true}
-                  />
-                  {songs.length > 0 && (
-                    <AudioPlayer
-                      track={
-                        songs.find((song) => song.id === currentlyPlaying) ||
-                        defaultSong
-                      }
+              {aiGeneratedTrack && (
+                <div className="mt-8">
+                  <AudioPlayer track={aiGeneratedTrack} />
+                  <div className="mt-4">
+                    <WaveForm
+                      audioUrl={aiGeneratedTrack.audioUrl}
+                      isPlaying={currentlyPlaying === aiGeneratedTrack.id}
+                      currentTime={0}
+                      duration={0}
                     />
-                  )}
-                </>
-              )} */}
-
+                  </div>
+                </div>
+              )}
               <div className="flex justify-center">
                 <Button
                   onClick={handleTryAnother}
@@ -276,7 +266,6 @@ export default function ImagePlayground() {
           )}
         </div>
       )}
-
       {isUploading && (
         <div className="mt-8 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto mb-4"></div>
@@ -344,198 +333,41 @@ function SongCard({
   isPlaying: boolean;
   onPlayPause: () => void;
 }) {
-  const [showShareDialog, setShowShareDialog] = useState(false);
-
-  const handleTwitterShare = () => {
-    const url = "http://google.com"; // Replace with your actual URL
-    const text =
-      "Check out this song " +
-      song.title +
-      " by " +
-      song.artist +
-      "that MelosAI recommended from this picture!"; // Customize the share text
-    window.open(
-      `http://twitter.com/share?url=${encodeURIComponent(
-        url
-      )}&text=${encodeURIComponent(text)}`,
-      "",
-      "left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0"
-    );
-    setShowShareDialog(false);
-  };
-
-  const handleFacebookShare = () => {
-    const url = "http://google.com"; // Replace with your actual URL
-    const text =
-      "Check out this song " +
-      song.title +
-      " by " +
-      song.artist +
-      " that MelosAI recommended from this picture!"; // Customize the share text
-
-    // Facebook sharing doesn't support custom text directly.
-    // Text is typically derived from the shared URL's meta tags (title, description, etc.).
-    window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-      "",
-      "left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0"
-    );
-
-    setShowShareDialog(false);
-  };
-
-  const handleLinkedinShare = () => {
-    const url = "http://google.com"; // Replace with your actual URL
-    const text =
-      "Check out this song " +
-      song.title +
-      " by " +
-      song.artist +
-      " that MelosAI recommended from this picture!"; // Customize the share text
-
-    // LinkedIn sharing primarily shares the URL and uses metadata from the webpage.
-    window.open(
-      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-        url
-      )}`,
-      "",
-      "left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0"
-    );
-
-    setShowShareDialog(false);
-  };
-
   return (
-    <>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <Card className="bg-gray-800/50 backdrop-blur-lg border-gray-700 overflow-hidden">
-          <AspectRatio ratio={1 / 1}>
-            <img
-              src={song.image}
-              alt={song.title}
-              className="object-cover w-full h-full"
-            />
-            <div className="absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-              <Button
-                variant="secondary"
-                size="icon"
-                className="rounded-full w-12 h-12 bg-white/20 hover:bg-white/30 text-white"
-                onClick={onPlayPause}
-              >
-                {isPlaying ? (
-                  <Pause className="w-6 h-6" />
-                ) : (
-                  <Play className="w-6 h-6 ml-1" />
-                )}
-              </Button>
-            </div>
-          </AspectRatio>
-          <CardContent className="p-4">
-            <h3 className="font-semibold text-white text-lg mb-1 truncate">
-              {song.title}
-            </h3>
-            <p className="text-gray-400 text-sm truncate">{song.artist}</p>
-          </CardContent>
-          <CardFooter className="p-4 pt-0 flex justify-between">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hover:bg-gray-700/50 rounded-full text-gray-400 hover:text-white"
-              onClick={() => setShowShareDialog(true)}
-            >
-              <Share2 className="w-5 h-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hover:bg-gray-700/50 rounded-full text-gray-400 hover:text-white"
-            >
-              <PlusCircle className="w-5 h-5" />
-            </Button>
-          </CardFooter>
-        </Card>
-      </motion.div>
-
-      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
-        <DialogContent className="sm:max-w-md bg-gray-900 text-white border-transparent drop-shadow-lg">
-          <DialogHeader>
-            <DialogTitle>Share this song</DialogTitle>
-          </DialogHeader>
-          <div className="flex justify-center gap-4 py-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <Card className="bg-gray-800/50 backdrop-blur-lg border-gray-700 overflow-hidden">
+        <AspectRatio ratio={1 / 1}>
+          <img
+            src={song.image}
+            alt={song.title}
+            className="object-cover w-full h-full"
+          />
+          <div className="absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
             <Button
               variant="secondary"
               size="icon"
-              className="rounded-full bg-gray-800 border-gray-700 hover:bg-gray-700"
-              onClick={handleLinkedinShare}
+              className="rounded-full w-12 h-12 bg-white/20 hover:bg-white/30 text-white"
+              onClick={onPlayPause}
             >
-              <img src="/linkedin.svg" alt="Linkedin" className="w-5 h-5" />
-            </Button>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="rounded-full bg-gray-800 border-gray-700 hover:bg-gray-700"
-              onClick={handleFacebookShare}
-            >
-              <img src="/facebook.svg" alt="Facebook" className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="rounded-full bg-gray-800 border-gray-700 hover:bg-gray-700"
-              onClick={handleTwitterShare}
-            >
-              <img src="/twitter.svg" alt="Twitter" className="w-5 h-5" />
+              {isPlaying ? (
+                <Pause className="w-6 h-6" />
+              ) : (
+                <Play className="w-6 h-6 ml-1" />
+              )}
             </Button>
           </div>
-          <div className="border-t border-gray-800 mt-4 pt-4">
-            <p className="text-center text-sm text-gray-400 mb-4">
-              Add to your library
-            </p>
-            <div className="flex justify-center gap-4">
-              <a
-                href="https://spotify.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full"
-              >
-                <Button
-                  className="w-full bg-gray-800 text-white hover:bg-gray-700"
-                  variant="secondary"
-                >
-                  <img
-                    src="/spotify.svg"
-                    alt="Spotify"
-                    className="w-5 h-5 mr-2"
-                  />
-                  Spotify
-                </Button>
-              </a>
-              <a
-                href="https://music.apple.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full"
-              >
-                <Button
-                  className="w-full bg-gray-800 text-white hover:bg-gray-700"
-                  variant="secondary"
-                >
-                  <img
-                    src="/apple-music.svg"
-                    alt="Apple Music"
-                    className="w-5 h-5 mr-2"
-                  />
-                  Apple Music
-                </Button>
-              </a>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
+        </AspectRatio>
+        <CardContent className="p-4">
+          <h3 className="font-semibold text-white text-lg mb-1 truncate">
+            {song.title}
+          </h3>
+          <p className="text-gray-400 text-sm truncate">{song.artist}</p>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
