@@ -1,11 +1,12 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { useRouter } from "next/navigation";
-import { useRef, useEffect, useState } from "react";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import Lenis from "lenis";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 const revealVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -123,8 +124,11 @@ export default function Hero() {
               <Button
                 variant="secondary"
                 className="px-8 py-6 bg-white/10 text-white rounded-lg font-semibold hover:bg-white/20 transition-colors"
+                asChild
               >
-                Watch Demo
+                <Link href={"https://youtu.be/A2E1Z0qH8Rk"} target={"_blank"}>
+                  Watch Demo
+                </Link>
               </Button>
             </div>
           </motion.div>
@@ -150,3 +154,4 @@ export default function Hero() {
     </motion.section>
   );
 }
+
