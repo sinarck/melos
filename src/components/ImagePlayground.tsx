@@ -20,7 +20,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import AudioWaveform from "@/components/AudioWaveform";
+// import { AudioWaveform } from "@/components/ui/AudioWaveform";
 import AudioPlayer from "@/components/AudioPlayer";
 
 interface Song {
@@ -30,6 +30,15 @@ interface Song {
   image: string;
   audioUrl: string;
 }
+
+// Define the default song
+const defaultSong: Song = {
+  id: "default",
+  title: "Default Song Title",
+  artist: "Default Artist",
+  image: "https://via.placeholder.com/150", // Placeholder image URL
+  audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Example audio URL
+};
 
 const loadingMessages = [
   "Retrieving your image — just a moment!",
@@ -235,7 +244,7 @@ export default function ImagePlayground() {
                 </div>
               </div>
 
-              {currentlyPlaying && (
+              {/* {currentlyPlaying && (
                 <>
                   <AudioWaveform
                     audioUrl={
@@ -244,11 +253,16 @@ export default function ImagePlayground() {
                     }
                     isPlaying={true}
                   />
-                  <AudioPlayer
-                    track={songs.find((song) => song.id === currentlyPlaying)}
-                  />
+                  {songs.length > 0 && (
+                    <AudioPlayer
+                      track={
+                        songs.find((song) => song.id === currentlyPlaying) ||
+                        defaultSong
+                      }
+                    />
+                  )}
                 </>
-              )}
+              )} */}
 
               <div className="flex justify-center">
                 <Button
