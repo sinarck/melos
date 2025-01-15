@@ -80,6 +80,7 @@ export default function ImagePlayground() {
   const processImage = async (uploadedUrl: string) => {
     try {
       setIsUploading(true);
+      setLoadingMessageIndex(0);
       const response = await axios.post<PredictionsApiResponse>(
         "/api/ai/generate",
         {
@@ -87,8 +88,7 @@ export default function ImagePlayground() {
         }
       );
 
-      setLoadingMessageIndex(0);
-
+      setLoadingMessageIndex(1);
       // Generate title through our API route
       const titleResponse = await axios.post("/api/title", {
         confidence: response.data.data.confidence,
@@ -96,11 +96,9 @@ export default function ImagePlayground() {
         top3_predictions: response.data.data.top3_predictions,
       });
 
-      setLoadingMessageIndex(1);
-
       // Generate music
       // const result = await generateMusic(titleResponse.data.songs[0]);
-
+      setLoadingMessageIndex(2);
       const musicResponse = await axios.post<GenerateApiResponse>(
         "/api/generate",
         {
@@ -111,8 +109,6 @@ export default function ImagePlayground() {
           } ${response.data.data.top3_predictions[0][1] * 100}%`,
         }
       );
-
-      setLoadingMessageIndex(2);
 
       setSongs([
         {

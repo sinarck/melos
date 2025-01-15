@@ -7,7 +7,6 @@ import Hero from "@/components/Hero";
 import HowItWorks from "@/components/HowItWorks";
 import Navbar from "@/components/Navbar";
 import ProgressBar from "@/components/ProgressBar";
-import Showcase from "@/components/Showcase";
 import { useSession } from "@clerk/nextjs"; // Import useSession from Clerk
 
 export default function Home() {
@@ -25,7 +24,6 @@ export default function Home() {
       <Hero />
       <Features />
       <HowItWorks />
-      <Showcase />
       <CTA />
       <Footer />
     </main>
