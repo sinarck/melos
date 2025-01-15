@@ -23,22 +23,45 @@ const questions = [
   {
     id: 2,
     text: "Which setting do you prefer listening to music in?",
-    options: ["Studying", "Workout", "Focused", "Relaxing", "Depends on my mood"],
+    options: [
+      "Studying",
+      "Workout",
+      "Focused",
+      "Relaxing",
+      "Depends on my mood",
+    ],
   },
   {
     id: 3,
     text: "Do you prefer instrumental music with any particular instrument focus?",
-    options: ["Piano", "Guitar", "Electronic or synthesized sounds", "Drums", "Orchestral or full-band arrangements"],
+    options: [
+      "Piano",
+      "Guitar",
+      "Electronic or synthesized sounds",
+      "Drums",
+      "Orchestral or full-band arrangements",
+    ],
   },
   {
     id: 4,
     text: "How do you feel about tempo in instrumental music?",
-    options: ["Slow and mellow", "Moderate and steady", "Fast and dynamic", "I like a mix of tempos", "I prefer ambient or atmospheric with no noticeable tempo"],
+    options: [
+      "Slow and mellow",
+      "Moderate and steady",
+      "Fast and dynamic",
+      "I like a mix of tempos",
+      "I prefer ambient or atmospheric with no noticeable tempo",
+    ],
   },
   {
     id: 5,
     text: "Are you more inclined to enjoy instrumental music with a clear melody or more abstract, atmospheric sounds?",
-    options: ["Clear, catchy melody", "A balance of melody and ambient elements", "Abstract and experimental sounds", "Complex layers with no distinct melody", ""],
+    options: [
+      "Clear, catchy melody",
+      "A balance of melody and ambient elements",
+      "Abstract and experimental sounds",
+      "Complex layers with no distinct melody",
+    ],
   },
 ];
 
@@ -104,15 +127,15 @@ const Blob = ({
 const Background = React.memo(() => {
   const getBlobPosition = (index: number) => {
     const positions = [
-      { x: 5, y: 5 }, // top-left corner
-      { x: 15, y: 15 }, // near top-left
-      { x: 25, y: 10 }, // top area
-      { x: 60, y: 15 }, // top-right
-      { x: 30, y: 40 }, // middle-left
-      { x: 70, y: 45 }, // middle-right
-      { x: 10, y: 70 }, // bottom-left
-      { x: 50, y: 75 }, // bottom-middle
-      { x: 85, y: 80 }, // bottom-right
+      { x: 5, y: 5 },
+      { x: 15, y: 15 },
+      { x: 25, y: 10 },
+      { x: 60, y: 15 },
+      { x: 30, y: 40 },
+      { x: 70, y: 45 },
+      { x: 10, y: 70 },
+      { x: 50, y: 75 },
+      { x: 85, y: 80 },
     ];
     return positions[index % positions.length];
   };
@@ -156,15 +179,21 @@ export default function Questionnaire() {
 
   const isLastQuestion = currentQuestion === questions.length - 1;
 
+  // New handleFinish function
   const handleFinish = async () => {
     setIsLoading(true);
     setCurrentQuestion(0);
     setSelectedAnswer("");
 
+    // Log answers before navigating to the next page
+    console.log(
+      "Selected Answers before navigate:",
+      useAnswerStore.getState().answers
+    );
+
     await new Promise((resolve) => setTimeout(resolve, 2000));
     router.push("/playground");
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center overflow-hidden relative bg-gray-900">
       <Background />
@@ -181,11 +210,16 @@ export default function Questionnaire() {
             transition={{ duration: 0.5 }}
             className="bg-white/10 backdrop-blur-lg p-8 rounded-lg shadow-lg max-w-md w-full relative z-10"
           >
-            {/* Center the question text */}
             <h2 className="text-2xl font-bold text-center text-white mb-6">
               {questions[currentQuestion].text}
             </h2>
-            <Select onValueChange={setSelectedAnswer} value={selectedAnswer}>
+            <Select
+              onValueChange={(value) => {
+                setSelectedAnswer(value);
+                useAnswerStore.getState().addAnswer(value); // Add the answer to the store
+              }}
+              value={selectedAnswer}
+            >
               <SelectTrigger className="w-full mb-4 bg-gray-800/80 text-white border-gray-700">
                 <SelectValue placeholder="Select an answer" />
               </SelectTrigger>
@@ -201,6 +235,22 @@ export default function Questionnaire() {
                 ))}
               </SelectContent>
             </Select>
+
+            {/* Display the answers for debugging */}
+            {/* {isLastQuestion && (
+              <div className="mt-6 text-center text-white">
+                <h3 className="text-xl font-bold">Your Selected Answers:</h3>
+                <ul className="list-disc mt-2">
+                  {useAnswerStore.getState().answers.map((answer, index) => (
+                    <li key={index}>
+                      <strong>Question {index + 1}:</strong>{" "}
+                      {answer || "No answer"}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )} */}
+
             <div className="flex gap-4">
               <Button
                 onClick={handleBack}
