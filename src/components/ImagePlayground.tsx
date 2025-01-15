@@ -1,27 +1,19 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import {
-  Upload,
-  Play,
-  Pause,
-  Share2,
-  PlusCircle,
-  Sparkles,
-} from "lucide-react";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
-// import { AudioWaveform } from "@/components/ui/AudioWaveform";
-import AudioPlayer from "@/components/AudioPlayer";
+import { UploadDropzone } from "@/utils/uploadthing";
+import { AnimatePresence, motion } from "framer-motion";
+import { Pause, Play, PlusCircle, Share2, Sparkles } from "lucide-react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface Song {
   id: string;
@@ -31,13 +23,12 @@ interface Song {
   audioUrl: string;
 }
 
-// Define the default song
 const defaultSong: Song = {
   id: "default",
   title: "Default Song Title",
   artist: "Default Artist",
-  image: "https://via.placeholder.com/150", // Placeholder image URL
-  audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Example audio URL
+  image: "https://via.placeholder.com/150",
+  audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
 };
 
 const loadingMessages = [
@@ -48,102 +39,12 @@ const loadingMessages = [
 ];
 
 export default function ImagePlayground() {
-  const [isDragging, setIsDragging] = useState(false);
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploaded, setUploaded] = useState(false);
   const [songs, setSongs] = useState<Song[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const router = useRouter();
-
-  <div className="flex items-center justify-center mb-8">
-    <div className="bg-white p-4 rounded-2xl shadow-lg flex items-center space-x-3">
-      <Sparkles className="w-8 h-8 text-indigo-600" />
-      <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-transparent bg-clip-text">
-        MelosAI Playground
-      </h1>
-    </div>
-  </div>;
-
-  useEffect(() => {
-    if (isUploading) {
-      const interval = setInterval(() => {
-        setLoadingMessageIndex((prevIndex) =>
-          prevIndex < loadingMessages.length - 1 ? prevIndex + 1 : prevIndex
-        );
-      }, 2000);
-
-      return () => clearInterval(interval);
-    } else {
-      setLoadingMessageIndex(0);
-    }
-  }, [isUploading]);
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = async (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    await processImage(file);
-  };
-
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      await processImage(file);
-    }
-  };
-
-  const processImage = async (file: File) => {
-    if (file && file.type.startsWith("image/")) {
-      setIsUploading(true);
-      const imageUrl = URL.createObjectURL(file);
-      setUploadedImage(imageUrl);
-
-      // Simulate API call for song recommendations
-      await new Promise((resolve) => setTimeout(resolve, 8000));
-      setSongs([
-        {
-          id: "1",
-          title: "Midnight Dreams",
-          artist: "Luna Echo",
-          image:
-            "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=800",
-          audioUrl:
-            "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-        },
-        {
-          id: "2",
-          title: "Sunset Vibes",
-          artist: "Ocean Waves",
-          image:
-            "https://images.unsplash.com/photo-1682687221006-b7fd60cf9dd0?w=800",
-          audioUrl:
-            "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        },
-        {
-          id: "3",
-          title: "Urban Lights",
-          artist: "City Pulse",
-          image:
-            "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800",
-          audioUrl:
-            "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-        },
-      ]);
-      setIsUploading(false);
-    }
-  };
 
   const handlePlayPause = (songId: string, audioUrl: string) => {
     if (currentlyPlaying === songId) {
@@ -160,122 +61,86 @@ export default function ImagePlayground() {
   };
 
   const handleTryAnother = () => {
-    // Stop any playing audio
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
     }
 
-    // Reset all states to initial values
-    setUploadedImage(null);
+    setUploaded(false);
     setSongs([]);
     setIsUploading(false);
     setCurrentlyPlaying(null);
     setLoadingMessageIndex(0);
-    setIsDragging(false);
-    // router.push('/login'); if you want to go directly to login page to promote creation of accounts
   };
+
+  if (!uploaded) {
+    return (
+      <div className="w-full max-w-5xl mx-auto">
+        <UploadDropzone
+          appearance={{
+            button: "text-white",
+            label: "text-white",
+            allowedContent: "text-neutral-300",
+            container:
+              "border-2 border-dashed border-white rounded-lg p-12 text-center transition-colors",
+          }}
+          endpoint="imageUploader"
+          onClientUploadComplete={(res) => {
+            toast.success("Image uploaded successfully", {
+              description: "Now we'll generate some music for you.",
+            });
+
+            setUploaded(true);
+          }}
+          onUploadError={(error: Error) => {
+            toast.error("Something went wrong", {
+              description: `${error.message}`,
+            });
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-5xl mx-auto">
-      {!uploadedImage ? (
-        <div
-          className={`border-2 border-dashed border-white rounded-lg p-12 text-center transition-colors ${
-            isDragging
-              ? "border-pink-500 bg-pink-500/10"
-              : "border-gray-700 hover:border-pink-500/50"
-          }`}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-        >
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            id="file-upload"
-            onChange={handleFileSelect}
-          />
-          <label
-            htmlFor="file-upload"
-            className="cursor-pointer flex flex-col items-center"
-          >
-            <Upload className="w-12 h-12 text-pink-500 mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">
-              Drop your image here
-            </h3>
-            <p className="text-gray-400">or click to select a file</p>
-          </label>
-        </div>
-      ) : (
-        <div className="space-y-8">
-          <div className="relative rounded-lg overflow-hidden bg-gray-800/50 h-[500px]">
-            <img
-              src={uploadedImage}
-              alt="Uploaded image"
-              className="w-full h-full object-contain"
-            />
-          </div>
-          {songs.length > 0 && (
-            <>
-              <div className="mt-16">
-                <h2 className="text-2xl font-bold text-white text-center mb-8">
-                  Your Personalized Song Recommendations
-                </h2>
-                <div className="grid md:grid-cols-3 gap-6">
-                  {songs.map((song) => (
-                    <SongCard
-                      key={song.id}
-                      song={song}
-                      isPlaying={currentlyPlaying === song.id}
-                      onPlayPause={() =>
-                        handlePlayPause(song.id, song.audioUrl)
-                      }
-                    />
-                  ))}
-                </div>
-              </div>
-              <div className="flex items-center justify-center mb-8">
-                <div className="bg-white p-4 rounded-2xl shadow-lg flex items-center space-x-3">
-                  <Sparkles className="w-8 h-8 text-indigo-600" />
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-transparent bg-clip-text">
-                    Our AI Generated Sound
-                  </h1>
-                </div>
-              </div>
-
-              {/* {currentlyPlaying && (
-                <>
-                  <AudioWaveform
-                    audioUrl={
-                      songs.find((song) => song.id === currentlyPlaying)
-                        ?.audioUrl
-                    }
-                    isPlaying={true}
+      <div className="space-y-8">
+        {songs.length > 0 && (
+          <>
+            <div className="mt-16">
+              <h2 className="text-2xl font-bold text-white text-center mb-8">
+                Your Personalized Song Recommendations
+              </h2>
+              <div className="grid md:grid-cols-3 gap-6">
+                {songs.map((song) => (
+                  <SongCard
+                    key={song.id}
+                    song={song}
+                    isPlaying={currentlyPlaying === song.id}
+                    onPlayPause={() => handlePlayPause(song.id, song.audioUrl)}
                   />
-                  {songs.length > 0 && (
-                    <AudioPlayer
-                      track={
-                        songs.find((song) => song.id === currentlyPlaying) ||
-                        defaultSong
-                      }
-                    />
-                  )}
-                </>
-              )} */}
-
-              <div className="flex justify-center">
-                <Button
-                  onClick={handleTryAnother}
-                  className="px-8 py-4 bg-gradient-to-r from-pink-500 to-violet-500 text-white rounded-lg font-semibold hover:opacity-90 transition-all duration-300 hover:scale-105"
-                >
-                  Try Another Image
-                </Button>
+                ))}
               </div>
-            </>
-          )}
-        </div>
-      )}
+            </div>
+            <div className="flex items-center justify-center mb-8">
+              <div className="bg-white p-4 rounded-2xl shadow-lg flex items-center space-x-3">
+                <Sparkles className="w-8 h-8 text-indigo-600" />
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-transparent bg-clip-text">
+                  Our AI Generated Sound
+                </h1>
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <Button
+                onClick={handleTryAnother}
+                className="px-8 py-4 bg-gradient-to-r from-pink-500 to-violet-500 text-white rounded-lg font-semibold hover:opacity-90 transition-all duration-300 hover:scale-105"
+              >
+                Try Another Image
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
 
       {isUploading && (
         <div className="mt-8 text-center">
@@ -347,13 +212,8 @@ function SongCard({
   const [showShareDialog, setShowShareDialog] = useState(false);
 
   const handleTwitterShare = () => {
-    const url = "http://google.com"; // Replace with your actual URL
-    const text =
-      "Check out this song " +
-      song.title +
-      " by " +
-      song.artist +
-      "that MelosAI recommended from this picture!"; // Customize the share text
+    const url = "http://google.com";
+    const text = `Check out this song ${song.title} by ${song.artist} that MelosAI recommended from this picture!`;
     window.open(
       `http://twitter.com/share?url=${encodeURIComponent(
         url
@@ -365,35 +225,17 @@ function SongCard({
   };
 
   const handleFacebookShare = () => {
-    const url = "http://google.com"; // Replace with your actual URL
-    const text =
-      "Check out this song " +
-      song.title +
-      " by " +
-      song.artist +
-      " that MelosAI recommended from this picture!"; // Customize the share text
-
-    // Facebook sharing doesn't support custom text directly.
-    // Text is typically derived from the shared URL's meta tags (title, description, etc.).
+    const url = "http://google.com";
     window.open(
       `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
       "",
       "left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0"
     );
-
     setShowShareDialog(false);
   };
 
   const handleLinkedinShare = () => {
-    const url = "http://google.com"; // Replace with your actual URL
-    const text =
-      "Check out this song " +
-      song.title +
-      " by " +
-      song.artist +
-      " that MelosAI recommended from this picture!"; // Customize the share text
-
-    // LinkedIn sharing primarily shares the URL and uses metadata from the webpage.
+    const url = "http://google.com";
     window.open(
       `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
         url
@@ -401,7 +243,6 @@ function SongCard({
       "",
       "left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0"
     );
-
     setShowShareDialog(false);
   };
 
@@ -539,3 +380,4 @@ function SongCard({
     </>
   );
 }
+
