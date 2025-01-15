@@ -1,8 +1,14 @@
 "use client";
-"use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Upload, Play, Pause, Share2, PlusCircle, Sparkles } from 'lucide-react';
+import {
+  Upload,
+  Play,
+  Pause,
+  Share2,
+  PlusCircle,
+  Sparkles,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -14,8 +20,8 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-
-
+import AudioWaveform from "@/components/AudioWaveform";
+import AudioPlayer from "@/components/AudioPlayer";
 
 interface Song {
   id: string;
@@ -25,10 +31,9 @@ interface Song {
   audioUrl: string;
 }
 
-
 const loadingMessages = [
   "Retrieving your image — just a moment!",
-  "\"A cozy house with a bonfire and s'mores\"",
+  '"A cozy house with a bonfire and s\'mores"',
   "Finding songs matching image vibe description",
   "Displaying your songs",
 ];
@@ -42,17 +47,16 @@ export default function ImagePlayground() {
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const router = useRouter();
-  
-  <div className="flex items-center justify-center mb-8">
-          <div className="bg-white p-4 rounded-2xl shadow-lg flex items-center space-x-3">
-            <Sparkles className="w-8 h-8 text-indigo-600" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-transparent bg-clip-text">
-              MelosAI Playground
-            </h1>
-          </div>
-        </div>
 
-  
+  <div className="flex items-center justify-center mb-8">
+    <div className="bg-white p-4 rounded-2xl shadow-lg flex items-center space-x-3">
+      <Sparkles className="w-8 h-8 text-indigo-600" />
+      <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-transparent bg-clip-text">
+        MelosAI Playground
+      </h1>
+    </div>
+  </div>;
+
   useEffect(() => {
     if (isUploading) {
       const interval = setInterval(() => {
@@ -147,12 +151,12 @@ export default function ImagePlayground() {
   };
 
   const handleTryAnother = () => {
-     // Stop any playing audio
-     if (audioRef.current) {
+    // Stop any playing audio
+    if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
     }
-    
+
     // Reset all states to initial values
     setUploadedImage(null);
     setSongs([]);
@@ -196,7 +200,7 @@ export default function ImagePlayground() {
         </div>
       ) : (
         <div className="space-y-8">
-          <div className="relative rounded-lg overflow-hidden bg-gray-800/50 h-[400px]">
+          <div className="relative rounded-lg overflow-hidden bg-gray-800/50 h-[500px]">
             <img
               src={uploadedImage}
               alt="Uploaded image"
@@ -222,6 +226,30 @@ export default function ImagePlayground() {
                   ))}
                 </div>
               </div>
+              <div className="flex items-center justify-center mb-8">
+                <div className="bg-white p-4 rounded-2xl shadow-lg flex items-center space-x-3">
+                  <Sparkles className="w-8 h-8 text-indigo-600" />
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-transparent bg-clip-text">
+                    Our AI Generated Sound
+                  </h1>
+                </div>
+              </div>
+
+              {currentlyPlaying && (
+                <>
+                  <AudioWaveform
+                    audioUrl={
+                      songs.find((song) => song.id === currentlyPlaying)
+                        ?.audioUrl
+                    }
+                    isPlaying={true}
+                  />
+                  <AudioPlayer
+                    track={songs.find((song) => song.id === currentlyPlaying)}
+                  />
+                </>
+              )}
+
               <div className="flex justify-center">
                 <Button
                   onClick={handleTryAnother}
@@ -322,7 +350,6 @@ function SongCard({
     setShowShareDialog(false);
   };
 
-
   const handleFacebookShare = () => {
     const url = "http://google.com"; // Replace with your actual URL
     const text =
@@ -331,7 +358,7 @@ function SongCard({
       " by " +
       song.artist +
       " that MelosAI recommended from this picture!"; // Customize the share text
-    
+
     // Facebook sharing doesn't support custom text directly.
     // Text is typically derived from the shared URL's meta tags (title, description, etc.).
     window.open(
@@ -339,11 +366,11 @@ function SongCard({
       "",
       "left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0"
     );
-    
+
     setShowShareDialog(false);
   };
 
-const handleLinkedinShare = () => {
+  const handleLinkedinShare = () => {
     const url = "http://google.com"; // Replace with your actual URL
     const text =
       "Check out this song " +
@@ -351,14 +378,16 @@ const handleLinkedinShare = () => {
       " by " +
       song.artist +
       " that MelosAI recommended from this picture!"; // Customize the share text
-  
+
     // LinkedIn sharing primarily shares the URL and uses metadata from the webpage.
     window.open(
-      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+        url
+      )}`,
       "",
       "left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0"
     );
-  
+
     setShowShareDialog(false);
   };
 
@@ -417,7 +446,7 @@ const handleLinkedinShare = () => {
         </Card>
       </motion.div>
 
-      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog} >
+      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
         <DialogContent className="sm:max-w-md bg-gray-900 text-white border-transparent drop-shadow-lg">
           <DialogHeader>
             <DialogTitle>Share this song</DialogTitle>
@@ -427,7 +456,7 @@ const handleLinkedinShare = () => {
               variant="secondary"
               size="icon"
               className="rounded-full bg-gray-800 border-gray-700 hover:bg-gray-700"
-              onClick ={handleLinkedinShare}
+              onClick={handleLinkedinShare}
             >
               <img src="/linkedin.svg" alt="Linkedin" className="w-5 h-5" />
             </Button>
@@ -496,4 +525,3 @@ const handleLinkedinShare = () => {
     </>
   );
 }
-

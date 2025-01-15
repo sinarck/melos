@@ -23,8 +23,6 @@ export default function Home() {
       <Hero />
       <Features />
       <HowItWorks />
-      <Showcase />
-      <CTA />
       <Footer />
     </main>
   )
