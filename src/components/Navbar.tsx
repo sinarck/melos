@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import { Music2, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import Link from 'next/link'
+import Link from "next/link";
+import { useSession, UserButton } from "@clerk/nextjs"; // Import UserButton from Clerk
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { isSignedIn } = useSession(); // Get sign-in status from Clerk
   const router = useRouter();
 
   useEffect(() => {
@@ -46,7 +48,10 @@ export default function Navbar() {
             <Link href="/">
               <Music2 className="w-8 h-8 text-pink-500" />
             </Link>
-            <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-violet-500 text-transparent bg-clip-text">
+            <Link
+              href="/"
+              className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-violet-500 text-transparent bg-clip-text"
+            >
               Melos AI
             </Link>
           </div>
@@ -76,12 +81,20 @@ export default function Navbar() {
             >
               <Github className="w-5 h-5" />
             </a>
-            <Button
-              className="bg-gradient-to-r from-pink-500 to-violet-500 text-white hover:opacity-90 transition-all duration-300 hover:scale-105"
-              onClick={() => router.push("/login")}
-            >
-              Log In
-            </Button>
+            {/* Only render the Log In button if the user is not signed in */}
+            {!isSignedIn ? (
+              <Button
+                className="bg-gradient-to-r from-pink-500 to-violet-500 text-white hover:opacity-90 transition-all duration-300 hover:scale-105"
+                onClick={() => router.push("/login")}
+              >
+                Log In
+              </Button>
+            ) : (
+              // Render UserButton when the user is signed in
+              <div className="flex items-center">
+                <UserButton  />
+              </div>
+            )}
           </div>
         </div>
       </div>
