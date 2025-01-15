@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { GenerateApiResponse } from "@/types/generate";
+import { PredictionsApiResponse } from "@/types/predictions";
 import { UploadDropzone } from "@/utils/uploadthing";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
@@ -13,10 +14,11 @@ import SongCard, { Song } from "./song-card";
 const loadingMessages = [
   "Finding just the right vibe for your image",
   '"Crafting the perfect title"',
-  "Creating the perfect sound",
+  "Creating the perfect sound (will take around 50 seconds)",
 ];
 
 export default function ImagePlayground() {
+  const [musicUrl, setMusicUrl] = useState<string | null>(null);
   const [uploaded, setUploaded] = useState(false);
   const [songs, setSongs] = useState<Song[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -51,44 +53,78 @@ export default function ImagePlayground() {
     setLoadingMessageIndex(0);
   };
 
-  const generateMusic = async (title: string) => {
-    try {
-      const response = await axios.post<GenerateApiResponse>("/api/generate", {
-        text: "I'll describe an image and my preferences and it's your job to generate music from that based on the vibe of the image. This image is wondrous and incredible, with rich earthy tones, and I particularly enjoy chill lofi music.",
-      });
+  // const generateMusic = async (title: string) => {
+  //   try {
+  //     const response = await axios.post<GenerateApiResponse>("/api/generate", {
+  //       text: "I'll describe an image and my preferences and it's your job to generate music from that based on the vibe of the image. This image is wondrous and incredible, with rich earthy tones, and I particularly enjoy chill lofi music.",
+  //     });
 
-      return {
-        songs: [
-          {
-            id: "1",
-            title: title,
-            audioUrl: response.data.data.meta.track_url,
-            artist: "Beatoven AI",
-            image:
-              "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-          },
-        ],
-      };
-    } catch (e) {
-      console.error(e);
-      throw new Error("Failed to generate music");
-    }
-  };
+  //     return {
+  //       songs: [
+  //         {
+  //           id: "1",
+  //           title: title,
+  //           audioUrl: response.data.data.meta.track_url,
+  //           artist: "Beatoven AI",
+  //           image:
+  //             "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+  //         },
+  //       ],
+  //     };
+  //   } catch (e) {
+  //     console.error(e);
+  //     throw new Error("Failed to generate music");
+  //   }
+  // };
 
-  const processImage = async () => {
+  const processImage = async (uploadedUrl: string) => {
     try {
       setIsUploading(true);
+      const response = await axios.post<PredictionsApiResponse>(
+        "/api/ai/generate",
+        {
+          url: "https://utfs.io/f/" + uploadedUrl,
+        }
+      );
+
       setLoadingMessageIndex(0);
 
       // Generate title through our API route
-      const titleResponse = await axios.post("/api/title");
+      const titleResponse = await axios.post("/api/title", {
+        confidence: response.data.data.confidence,
+        primary_emotion: response.data.data.primary_emotion,
+        top3_predictions: response.data.data.top3_predictions,
+      });
+
       setLoadingMessageIndex(1);
 
       // Generate music
-      const result = await generateMusic(titleResponse.data.songs[0]);
+      // const result = await generateMusic(titleResponse.data.songs[0]);
+
+      const musicResponse = await axios.post<GenerateApiResponse>(
+        "/api/generate",
+        {
+          text: `I'll describe an image and my preferences and it's your job to generate music from that based on the vibe of the image. This image feels ${
+            response.data.data.confidence * 100
+          }% ${response.data.data.primary_emotion}, with ${
+            response.data.data.top3_predictions[0][0]
+          } ${response.data.data.top3_predictions[0][1] * 100}%`,
+        }
+      );
+
       setLoadingMessageIndex(2);
 
-      setSongs(result.songs);
+      setSongs([
+        {
+          id: "1",
+          title: titleResponse.data.songs[0],
+          audioUrl: musicResponse.data.data.meta.track_url,
+          artist: "Beatoven AI",
+          image:
+            "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+        },
+      ]);
+
       setIsUploading(false);
     } catch (error) {
       console.error("Error processing image:", error);
@@ -109,14 +145,15 @@ export default function ImagePlayground() {
           }}
           endpoint="imageUploader"
           onClientUploadComplete={(res) => {
-            console.log(res);
+            const uploadedKey = res[0].key;
+            setMusicUrl(uploadedKey);
 
             toast.success("Image uploaded successfully", {
               description: "Now we'll generate some music for you.",
             });
+
             setUploaded(true);
-            // Call processImage with the uploaded URL
-            processImage();
+            processImage(uploadedKey);
           }}
           onUploadError={(error: Error) => {
             toast.error("Something went wrong", {

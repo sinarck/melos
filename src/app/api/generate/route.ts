@@ -13,7 +13,7 @@ interface TrackApiResponse {
   tracks: string[];
 }
 
-export const maxDuration = 65; // max duration in seconds
+export const maxDuration = 60; // max duration in seconds
 
 export const POST = async (request: NextRequest) => {
   try {

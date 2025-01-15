@@ -3,6 +3,15 @@ module.exports = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "melos.ufs.sh",
+        pathname: "/f/*",
+      },
+    ],
+  },
   async rewrites() {
     return [
       {
@@ -12,3 +21,4 @@ module.exports = {
     ];
   },
 };
+
