@@ -1,7 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { GenerateApiResponse } from "@/types/generate";
 import { UploadDropzone } from "@/utils/uploadthing";
+import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { useRef, useState } from "react";
@@ -9,10 +11,9 @@ import { toast } from "sonner";
 import SongCard, { Song } from "./song-card";
 
 const loadingMessages = [
-  "Retrieving your image — just a moment!",
-  '"A cozy house with a bonfire and s\'mores"',
-  "Finding songs matching image vibe description",
-  "Displaying your songs",
+  "Finding just the right vibe for your image",
+  '"Crafting the perfect title"',
+  "Creating the perfect sound",
 ];
 
 export default function ImagePlayground() {
@@ -50,6 +51,50 @@ export default function ImagePlayground() {
     setLoadingMessageIndex(0);
   };
 
+  const generateMusic = async (title: string) => {
+    try {
+      const response = await axios.post<GenerateApiResponse>("/api/generate", {
+        text: "I'll describe an image and my preferences and it's your job to generate music from that based on the vibe of the image. This image is wondrous and incredible, with rich earthy tones, and I particularly enjoy chill lofi music.",
+      });
+
+      return {
+        songs: [
+          {
+            id: "1",
+            title: title,
+            audioUrl: response.data.data.meta.track_url,
+            artist: "Beatoven AI",
+            image:
+              "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+          },
+        ],
+      };
+    } catch (error) {
+      throw new Error("Failed to generate music");
+    }
+  };
+
+  const processImage = async (imageUrl: string) => {
+    try {
+      setIsUploading(true);
+      setLoadingMessageIndex(0);
+
+      // Generate title through our API route
+      const titleResponse = await axios.post("/api/title");
+      setLoadingMessageIndex(1);
+
+      // Generate music
+      const result = await generateMusic(titleResponse.data.songs[0]);
+      setLoadingMessageIndex(2);
+
+      setSongs(result.songs);
+      setIsUploading(false);
+    } catch (error) {
+      console.error("Error processing image:", error);
+      toast.error("Failed to process image");
+      setIsUploading(false);
+    }
+  };
   if (!uploaded) {
     return (
       <div className="w-full max-w-5xl mx-auto">
@@ -66,8 +111,9 @@ export default function ImagePlayground() {
             toast.success("Image uploaded successfully", {
               description: "Now we'll generate some music for you.",
             });
-
             setUploaded(true);
+            // Call processImage with the uploaded URL
+            processImage(res[0].url);
           }}
           onUploadError={(error: Error) => {
             toast.error("Something went wrong", {
@@ -78,35 +124,6 @@ export default function ImagePlayground() {
       </div>
     );
   }
-
-  const processImage = async (imageUrl: string) => {
-    setIsUploading(true);
-    setLoadingMessageIndex(0);
-
-    {
-      () => {
-        new Promise((resolve) => setTimeout(resolve, 1000));
-      };
-      setLoadingMessageIndex(1);
-
-      () => {
-        new Promise((resolve) => setTimeout(resolve, 1000));
-      };
-      setLoadingMessageIndex(2);
-      setSongs([
-        {
-          id: "1",
-          title: "Song Title",
-          audioUrl:
-            "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-          artist: "Artist",
-          image: "https://via.placeholder.com/150",
-        },
-      ]);
-
-      setIsUploading(false);
-    }
-  };
 
   return (
     <div className="w-full max-w-5xl mx-auto">
