@@ -17,28 +17,28 @@ import useAnswerStore from "@/store"; // Import the Zustand store
 const questions = [
   {
     id: 1,
-    text: "Placeholder Question 1",
-    options: ["Option 1", "Option 2", "Option 3"],
+    text: "What type of music do you listen to the most?",
+    options: ["Pop", "Rock", "Hip-hop/Rap", "R&B", "Classical"],
   },
   {
     id: 2,
-    text: "Placeholder Question 2",
-    options: ["Option A", "Option B", "Option C"],
+    text: "Which setting do you prefer listening to music in?",
+    options: ["Studying", "Workout", "Focused", "Relaxing", "Depends on my mood"],
   },
   {
     id: 3,
-    text: "Placeholder Question 3",
-    options: ["Choice X", "Choice Y", "Choice Z"],
+    text: "Do you prefer instrumental music with any particular instrument focus?",
+    options: ["Piano", "Guitar", "Electronic or synthesized sounds", "Drums", "Orchestral or full-band arrangements"],
   },
   {
     id: 4,
-    text: "Placeholder Question 4",
-    options: ["Pick 1", "Pick 2", "Pick 3"],
+    text: "How do you feel about tempo in instrumental music?",
+    options: ["Slow and mellow", "Moderate and steady", "Fast and dynamic", "I like a mix of tempos", "I prefer ambient or atmospheric with no noticeable tempo"],
   },
   {
     id: 5,
-    text: "Placeholder Question 5",
-    options: ["Select A", "Select B", "Select C"],
+    text: "Are you more inclined to enjoy instrumental music with a clear melody or more abstract, atmospheric sounds?",
+    options: ["Clear, catchy melody", "A balance of melody and ambient elements", "Abstract and experimental sounds", "Complex layers with no distinct melody", ""],
   },
 ];
 
@@ -181,7 +181,8 @@ export default function Questionnaire() {
             transition={{ duration: 0.5 }}
             className="bg-white/10 backdrop-blur-lg p-8 rounded-lg shadow-lg max-w-md w-full relative z-10"
           >
-            <h2 className="text-2xl font-bold text-white mb-6">
+            {/* Center the question text */}
+            <h2 className="text-2xl font-bold text-center text-white mb-6">
               {questions[currentQuestion].text}
             </h2>
             <Select onValueChange={setSelectedAnswer} value={selectedAnswer}>
