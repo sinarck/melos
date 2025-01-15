@@ -1,12 +1,16 @@
 "use client";
 
-import { UserButton } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
+import { UserButton, useSession } from "@clerk/nextjs"; // Import UserButton from Clerk
 import { Github, Music2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { isSignedIn } = useSession(); // Get sign-in status from Clerk
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -77,11 +81,20 @@ export default function Navbar() {
             >
               <Github className="w-5 h-5" />
             </a>
-            <div className="flex justify-between items-center p-4">
-              <div className="text-white font-semibold text-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-4 py-2 rounded-full shadow-lg hover:scale-105 transition-transform duration-200">
-                <UserButton showName />
+            {/* Only render the Log In button if the user is not signed in */}
+            {!isSignedIn ? (
+              <Button
+                className="bg-gradient-to-r from-pink-500 to-violet-500 text-white hover:opacity-90 transition-all duration-300 hover:scale-105"
+                onClick={() => router.push("/login")}
+              >
+                Log In
+              </Button>
+            ) : (
+              // Render UserButton when the user is signed in
+              <div className="flex items-center">
+                <UserButton />
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
