@@ -1,10 +1,9 @@
 "use client";
 
-import { ClerkProvider, SignedIn, SignedOut, SignIn } from "@clerk/nextjs";
+import { ClerkProvider, RedirectToSignIn } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
-
-import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
+import { useRouter } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,14 +16,9 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-          <SignedOut>
-            <SignIn routing="hash" />
-          </SignedOut>
-          <SignedIn>{children}</SignedIn>
-          <Toaster richColors />
+          {children}
         </body>
       </html>
     </ClerkProvider>
   );
 }
-
