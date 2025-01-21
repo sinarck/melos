@@ -54,6 +54,7 @@ export default function ImagePlayground() {
   };
 
   // const generateMusic = async (title: string) => {
+
   //   try {
 
   //     const response = await axios.post<GenerateApiResponse>("/api/generate", {
