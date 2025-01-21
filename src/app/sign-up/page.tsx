@@ -1,6 +1,6 @@
 "use client";
 
-import { ClerkProvider, SignIn } from "@clerk/nextjs";
+import { ClerkProvider, SignIn, SignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { dark } from "@clerk/themes";
 import { Appearance } from "@clerk/types";
@@ -42,11 +42,11 @@ export default function LoginPage() {
   return (
     <ClerkProvider appearance={appearance}>
       <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center p-4">
-        <SignIn 
+        <SignUp
           routing="hash"
           appearance={appearance}
           
-          signUpUrl="/sign-up"
+          signInUrl="/login"
         />
         
       </div>
