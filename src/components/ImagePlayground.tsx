@@ -55,6 +55,7 @@ export default function ImagePlayground() {
 
   // const generateMusic = async (title: string) => {
   //   try {
+
   //     const response = await axios.post<GenerateApiResponse>("/api/generate", {
   //       text: "I'll describe an image and my preferences and it's your job to generate music from that based on the vibe of the image. This image is wondrous and incredible, with rich earthy tones, and I particularly enjoy chill lofi music.",
   //     });
