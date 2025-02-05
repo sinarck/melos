@@ -8,7 +8,7 @@ Melos AI is an innovative tool that finds songs matching the vibe of your images
 
 ## 🎥 Demo
 
-Check out our live demo on [YouTube](https://www.youtube.com/your-demo-link). Due to time constraints, the video has long segments of pure pauses since we couldn't edit them out.
+Check out our live demo on [YouTube](https://youtu.be/A2E1Z0qH8Rk). Due to time constraints, the video has long segments of pure pauses since we couldn't edit them out.
 
 ---
 
@@ -44,3 +44,4 @@ $ npm dev
 # Run the Python development server
 $ python src/app/api/ai/index.py
 ```
+
