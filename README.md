@@ -1,41 +1,46 @@
-<<<<<<< HEAD
-# melos
-Melos AI is a tool that finds songs that match the vibe of an image. Built for the 2024-2025 Nosu AI Hackathon. 
-=======
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<h2 align="center">
+  <strong>Melos AI</strong>
+</h2>
 
-## Getting Started
+Melos AI is an innovative tool that finds songs matching the vibe of your images. Built for the 2024-2025 Nosu AI Hackathon (and winner!), Melos AI harnesses the power of image analysis and AI to deliver the perfect soundtrack to accompany your visual inspirations.
 
-First, run the development server:
+---
+
+## 🎥 Demo
+
+Check out our live demo on [YouTube](https://www.youtube.com/your-demo-link). Due to time constraints, the video has long segments of pure pauses since we couldn't edit them out.
+
+---
+
+## 🎵 Features
+
+- **Seamless Image Analysis.** Leverage advanced image analysis to capture the emotional essence of your visuals.
+- **Smart Music Matching.** Automatically generate personalized song recommendations based on moods and themes.
+- **Instant Preview.** Enjoy quick previews of AI-generated soundtracks before you dive into the full experience.
+- **Shareability.** Easily share your discoveries on social media or add them directly to your music library.
+
+---
+
+## 📦 Installation & Local Setup
+
+Ensure you have [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/download/), and [Python](https://www.python.org/) installed.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clone the repository
+$ git clone https://github.com/yourusername/melos-ai.git
+
+# Navigate into the repository
+$ cd melos-ai
+
+# Install dependencies
+$ npm install
+
+# Install Python dependencies
+$ pip install -r requirements.txt
+
+# Run the Next.js development server
+$ npm dev
+
+# Run the Python development server
+$ python src/app/api/ai/index.py
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
->>>>>>> 2beecc1 (feat: initial commit)
