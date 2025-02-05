@@ -4,13 +4,9 @@
 
 Melos AI is an innovative tool that finds songs matching the vibe of your images. Built for the 2024-2025 Nosu AI Hackathon (and winner!), Melos AI harnesses the power of image analysis and AI to deliver the perfect soundtrack to accompany your visual inspirations.
 
----
-
 ## 🎥 Demo
 
 Check out our live demo on [YouTube](https://youtu.be/A2E1Z0qH8Rk). Due to time constraints, the video has long segments of pure pauses since we couldn't edit them out.
-
----
 
 ## 🎵 Features
 
@@ -18,8 +14,6 @@ Check out our live demo on [YouTube](https://youtu.be/A2E1Z0qH8Rk). Due to time 
 - **Smart Music Matching.** Automatically generate personalized song recommendations based on moods and themes.
 - **Instant Preview.** Enjoy quick previews of AI-generated soundtracks before you dive into the full experience.
 - **Shareability.** Easily share your discoveries on social media or add them directly to your music library.
-
----
 
 ## 📦 Installation & Local Setup
 
